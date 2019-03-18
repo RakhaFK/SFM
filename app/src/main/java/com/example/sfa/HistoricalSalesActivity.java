@@ -22,15 +22,15 @@ public class HistoricalSalesActivity extends AppCompatActivity {
 
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
-//        final ViewPager viewPager = findViewById(R.id.pagerhistoricalsales);
+        final ViewPager viewPager = findViewById(R.id.pagerhistoricalsales);
         final HistoricalSalesWardahPagerAdapter adapter = new HistoricalSalesWardahPagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
 
-//        viewPager.setAdapter(adapter);
-//        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        viewPager.setAdapter(adapter);
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-//                viewPager.setCurrentItem(tab.getPosition());
+                viewPager.setCurrentItem(tab.getPosition());
             }
 
             @Override

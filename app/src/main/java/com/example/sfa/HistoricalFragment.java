@@ -1,17 +1,24 @@
 package com.example.sfa;
 
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDialogFragment;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -25,58 +32,92 @@ import java.util.ResourceBundle;
  */
 public class HistoricalFragment extends Fragment {
 
-    DatePicker datePicker;
-    TextView displayDate;
-    Button changeDate;
-    int month;
+    EditText dateOfBirthET;
+    EditText endDateET;
+    String selectedDate;
+    String selectedEndDate;
+    public static final int REQUEST_CODE_1 = 11;
+    public static final int REQUEST_CODE_2 = 22;
 
-//    @NonNull
+    private OnFragmentInteractionListener mListener;
+
+    public HistoricalFragment() {}
+
+    public static HistoricalFragment newInstance() {
+        HistoricalFragment fragment = new HistoricalFragment();
+        return fragment;
+    }
+
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    //    @NonNull
+    // @Override
 //    public Dialog onCreateDialog(Bundle savedInstanceState){
 
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode ==REQUEST_CODE_1 && resultCode == Activity.RESULT_OK) {
+            selectedDate = data.getStringExtra("selectedDate");
+            dateOfBirthET.setText(selectedDate);
+        }
+        if(requestCode ==REQUEST_CODE_2 && resultCode == Activity.RESULT_OK) {
+            selectedEndDate = data.getStringExtra("selectedEndDate");
+            endDateET.setText(selectedEndDate);
+        }
+    }
+
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        final View view = inflater.inflate(R.layout.fragment_historical, container, false);
+        View view = inflater.inflate(R.layout.fragment_historical, container,  false);
+        dateOfBirthET = view.findViewById(R.id.tv);
+        endDateET = view.findViewById(R.id.tv2);
 
-        datePicker = (DatePicker) view.findViewById(R.id.datePicker);
-        displayDate = (TextView) view.findViewById(R.id.display_date);
-        displayDate.setText("Display Date");
-        changeDate = (Button) view.findViewById(R.id.change_date_button);
+        final FragmentManager fm = ((AppCompatActivity)getActivity()).getSupportFragmentManager();
 
-        displayDate.setText(currentDate());
-        changeDate.setOnClickListener(new View.OnClickListener() {
+        dateOfBirthET.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                displayDate.setText(currentDate());
+            public void onClick(View v) {
+                AppCompatDialogFragment newFragment = new DatePickerFragment();
+                newFragment.setTargetFragment(HistoricalFragment.this, REQUEST_CODE_1);
+                newFragment.show(fm, "datePicker1");
+
+            }
+        });
+
+        endDateET.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AppCompatDialogFragment newFragment = new DatePickerFragment2();
+                newFragment.setTargetFragment(HistoricalFragment.this, REQUEST_CODE_2);
+                newFragment.show(fm, "datePicker2");
             }
         });
         return view;
+
     }
 
-    public String currentDate() {
-        StringBuilder mcurrentDate = new StringBuilder();
-        month = datePicker.getMonth() + 1;
-        mcurrentDate.append("Date: " + month + "/" +
-                datePicker.getDayOfMonth() + "/" + datePicker.getYear());
-        return mcurrentDate.toString();
-//        final Calendar calendar = Calendar.getInstance();
-//        int year = calendar.get(Calendar.YEAR);
-//        int month = calendar.get(Calendar.MONTH);
-//        int day = calendar.get(Calendar.DAY_OF_MONTH);
-//
-//        return new DatePickerDialog(getActivity(), (DatePickerDialog.OnDateSetListener) getActivity(), year, month, day);
-//    }
-//    public void onDateSet(DatePicker view, int year, int month, int day) {
-//        //Do something with the date chosen by the user
-//        TextView tv = (TextView) getActivity().findViewById(R.id.tv);
-//        tv.setText("Date changed...");
-//        tv.setText(tv.getText() + "\nYear: " + year);
-//        tv.setText(tv.getText() + "\nMonth: " + month);
-//        tv.setText(tv.getText() + "\nDay of Month: " + day);
-//
-//        String stringOfDate = day + "/" + month + "/" + year;
-//        tv.setText(tv.getText() + "\n\nFormatted date: " + stringOfDate);
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
+        } //else {
+        //throw new RuntimeException(context.toString() + "must implement OnFragmentListener");
+        // }
     }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener =null;
+    }
+
+    public interface OnFragmentInteractionListener {
+        void onFragmentInteraction(Uri uri);
+    }
+
 
 }

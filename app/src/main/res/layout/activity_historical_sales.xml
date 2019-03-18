@@ -36,10 +36,10 @@
     </LinearLayout>
 
     <!--View pager untuk judul fragment-->
-    <!--<android.support.v4.view.ViewPager-->
-        <!--android:id="@+id/pagerhistoricalsales"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="fill_parent"-->
-        <!--android:layout_below="@id/tab_layout" />-->
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pagerhistoricalsales"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@id/tab_layout" />
 
 </LinearLayout>
